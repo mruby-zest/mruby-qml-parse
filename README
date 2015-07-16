@@ -1,0 +1,6 @@
+mruby-qml-parse
+---------------
+
+A semantic parser for QML independent of Qt
+
+THIS WORK IS STILL IN THE DESIGN PHASE, IT IS UNSUITABLE FOR REAL USE
