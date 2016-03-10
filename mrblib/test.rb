@@ -1,5 +1,3 @@
-#load 'main.rb'
-
 #Dummy classes
 class Rectangle
     attr_accessor :children
@@ -54,7 +52,12 @@ class TextBox; attr_accessor :label end
 
 def runTest
     l = Parser.new
-    prog = l.load_qml_from_file("../test/PropertyFunctionTest.qml")
+    in_test = `pwd`.include?("mrblib")
+    path = "test/PropertyFunctionTest.qml"
+    if(in_test)
+        path = "../" + path
+    end
+    prog = l.load_qml_from_file(path)
     #prog = l.load_qml_from_file("../test/MainMenu.qml")
     #prog = l.load_qml_from_file("../../mruby-zest/mrblib/Widget.qml")
     #prog = l.load_qml_from_file("../test/BankView.qml")
@@ -69,11 +72,11 @@ def runTest
     puts "Real Execution"
     puts "--------------"
     pir = ProgIR.new(root_node)
-    pp pir.IR
+    puts pir.IR
     pc  = ProgVM.new(pir.IR)
     puts "Resulting Instance"
     puts "------------------"
-    pp pc.instance
+    puts pc.instance
 end
 #start = Time.now
 #runTest
