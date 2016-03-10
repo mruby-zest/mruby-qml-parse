@@ -4,6 +4,11 @@ class ProgVM
         value.instance_eval("def #{name};@#{name};end")
         value.instance_eval("def #{name}=(val);@#{name}=val;end")
     end
+    def add_func(value, name, args, code)
+        puts "Adding Function..."
+        puts "def #{name}#{args};#{code};end"
+        value.instance_eval("def #{name}#{args};#{code};end")
+    end
 
     def initialize(ir)
         instance = []
@@ -27,6 +32,9 @@ class ProgVM
                 #puts "Connecting field..."
                 (obj, field, value) = inst[1..3]
                 instance[obj].send(field+"=",value)
+            when AM
+                (obj,name, args, value) = inst[1..4]
+                add_func(instance[obj], name, args, value)
             when CI
                 #puts "Ignoring..."
             when EC

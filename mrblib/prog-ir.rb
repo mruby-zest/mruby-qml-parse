@@ -15,27 +15,47 @@ class ProgIR
     def init_class(instance, parent)
         @cur_id += 1
         this_id = @cur_id
-        emit [CC, instance.name, this_id]
-        instance.member.each do |member|
-            emit [AA, this_id, member.name, member.type]
+        emit IrNode.new(CC, instance.file, instance.line,
+                        [instance.name, this_id, instance.id],
+                        ["class", "parent", "obj_name"])
+        instance.extensions.each do |ext|
+            emit IrNode.new(EI, ext.file, ext.line,
+                            [this_id, ext],
+                            ["obj_id", "mixin"])
         end
-        emit [CI, this_id]
+        instance.member.each do |member|
+            emit IrNode.new(AA, member.file, member.line,
+                            [this_id, member.name, member.type],
+                            ["obj_id", "attr_name", "attr_type"])
+        end
+        instance.func.each do |func|
+            emit IrNode.new(AM, func.file, func.line,
+                            [this_id, func.name, func.arg_list, func.code],
+                            ["obj_id", "func_name", "func_args", "code"])
+        end
         instance.subobj.each do |obj|
             init_class(obj, this_id)
         end
         instance.props.each do |prop|
-            emit [CA, this_id, prop.field, prop.value]
+            emit IrNode.new(CA, prop.file, prop.line,
+                            [this_id, prop.field, prop.value],
+                            ["obj_id", "property", "value"])
         end
         if(parent)
-            emit [SP, this_id, parent]
+            emit IrNode.new(SP, instance.file, instance.line,
+                            [this_id, parent],
+                            ["obj_id", "parent_id"])
         end
+        emit IrNode.new(CI, instance.file, -1,
+                        [this_id],
+                        ["obj_id"])
     end
     def initialize(instance)
         @IR = []
-        puts getNames(instance)
+        #puts getNames(instance)
         @cur_id = -1
-        emit [SC]
+        emit IrNode.new(SC, instance.file, 0, [])
         init_class(instance, nil)
-        emit [EC]
+        emit IrNode.new(EC, instance.file, -1, [])
     end
 end
