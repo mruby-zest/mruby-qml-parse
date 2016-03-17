@@ -6,6 +6,8 @@ class TCode
 end
 
 class TImport
+    def initialize(file, line)
+    end
     def inspect
         "(TImport)"
     end
