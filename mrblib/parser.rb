@@ -14,7 +14,14 @@ class Parser
 
     #Proxy Methods
     def eof
-        @stream.eof
+        ch = nil
+        begin
+            ch = @stream.getc
+        rescue 
+            return true
+        end
+        @stream.ungetc(ch) if ch
+        false
     end
 
     def ungetc(ch)
@@ -42,15 +49,21 @@ class Parser
     def consume_tok
         g = ""
         ss = ''
-        while(!eof && (ss=getc).match(/\s/))
+        while(!eof && ss=getc)
+            if(!(ss.match(/\s/)))
+                break
+            end
         end
-        if(!ss.match(/\s/))
+        if(ss && !ss.match(/\s/))
            g = ss
         end
         if(g == "{" || g == "}")
             return g
         end
-        while(!eof && !(ss=getc).match(/[\s}{)(]/))
+        while(!eof && ss=getc)
+            if(ss.match(/[\s}{)(]/))
+                break
+            end
             @line += 1 if ss == "\n"
             g << ss
             if(g == "//")
@@ -58,7 +71,7 @@ class Parser
                 return consume_tok
             end
         end
-        if(ss.length != 0)
+        if(!ss.nil? && ss.length != 0)
             ungetc ss
         end
         #puts "tok = '#{g}'"
