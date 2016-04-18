@@ -9,29 +9,24 @@ class Parser
     def load_qml_from_file(f)
         @file = f
         @line = 1
+        #puts("loadqml(#{f})")
         load_qml(open(f))
     end
 
     #Proxy Methods
     def eof
-        ch = nil
-        begin
-            ch = @stream.getc
-        rescue 
-            return true
-        end
-        @stream.ungetc(ch) if ch
-        false
+        @stream_pos >= @stream_len
     end
 
     def ungetc(ch)
         @line -= 1 if ch == "\n"
-        @stream.ungetc ch
+        @stream_pos -= 1
     end
 
     def getc
-        ch = @stream.getc
+        ch = @stream[@stream_pos]
         @line += 1 if ch == "\n"
+        @stream_pos += 1
         ch
     end
 
@@ -50,18 +45,18 @@ class Parser
         g = ""
         ss = ''
         while(!eof && ss=getc)
-            if(!(ss.match(/\s/)))
+            if(!space?(ss))
                 break
             end
         end
-        if(ss && !ss.match(/\s/))
+        if(ss && !space?(ss))
            g = ss
         end
-        if(g == "{" || g == "}")
+        if("{}".include? g)
             return g
         end
         while(!eof && ss=getc)
-            if(ss.match(/[\s}{)(]/))
+            if(space?(ss) || special?(ss))
                 break
             end
             @line += 1 if ss == "\n"
@@ -79,37 +74,46 @@ class Parser
     end
 
     def consume_value_tok
-        g = ""
         ss = ''
         #Consume leading whitespace
-        while(!eof && (ss=getc).match(/\s/))
+        while(!eof && space?(ss=getc))
         end
 
         #Consume first char
-        depth = 0
-        if(!ss.match(/\s/))
-           g = ss
-           if(ss=="{")
-               depth = 1
-           elsif(ss == "\"")
+        if(!space?(ss))
+           if(ss == "\"")
                return read_string
-           elsif(ss == "\[")
-               #puts "It's an array..."
+           else
+               ungetc ss
            end
         end
 
-        while(!eof && (!(ss=getc).match(/[\n;}]/) || (depth != 0)))
+        srt = @stream_pos
+        depth = 0
+        while(!eof && (ss=getc) && ((depth != 0) || !term?(ss)))
             if(ss == "{")
                 depth += 1
             elsif(ss == "}")
                 depth -= 1
             end
-            g << ss
         end
+        nd = @stream_pos-1
         if(ss.length != 0)
             ungetc ss
         end
-        g
+        @stream[srt...nd]
+    end
+
+    def term?(c)
+        "\n;}".include? c
+    end
+
+    def space?(c)
+        "\n \t\r".include? c
+    end
+
+    def special?(c)
+        "{}()".include? c
     end
 
     def consume_arg_list
@@ -187,7 +191,12 @@ class Parser
     end
 
     def load_qml(s)
-        @stream = s
+        #ac1 = ObjectSpace.allocs
+        #dc1 = ObjectSpace.deallocs
+        #t1 = Time.new
+        @stream     = s.read
+        @stream_pos = 0
+        @stream_len = @stream.length
         state = :sGlobal
         program = []
 
@@ -212,6 +221,10 @@ class Parser
             end
         end
         @stream = nil
+        #t2 = Time.new
+        #ac2 = ObjectSpace.allocs
+        #dc2 = ObjectSpace.deallocs
+        #puts("#{1000*(t2-t1)}ms #{ac2-ac1} alloc #{dc2-dc1} deallocs")
         program
     end
 end
