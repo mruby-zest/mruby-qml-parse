@@ -77,6 +77,31 @@ def runTest
     puts "Resulting Instance"
     puts "------------------"
     puts pc.instance
+
+
+    path = "test/LocalPropTest.qml"
+    path = "../" + path if(in_test)
+    #Run test on the local variable file
+    prog = l.load_qml_from_file(path)
+    #prog = l.load_qml_from_file("../test/MainMenu.qml")
+    #prog = l.load_qml_from_file("../../mruby-zest/mrblib/Widget.qml")
+    #prog = l.load_qml_from_file("../test/BankView.qml")
+    puts prog
+    puts
+    root_node = nil
+    prog.each do |x|
+        if(x.is_a? TInst)
+            root_node = x
+        end
+    end
+    puts "Real Execution"
+    puts "--------------"
+    pir = ProgIR.new(root_node)
+    puts pir.IR
+    pc  = ProgVM.new(pir.IR)
+    puts "Resulting Instance"
+    puts "------------------"
+    puts pc.instance
 end
 #start = Time.now
 #runTest

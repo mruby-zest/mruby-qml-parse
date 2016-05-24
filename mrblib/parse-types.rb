@@ -35,7 +35,7 @@ class TFunc < TParseType
         end
     end
     def inspect
-        out = "#<TFunc:#{@line}:#{@name}("+@arg_list+")\""+@code.split.join(" ").to_s+"\">"
+        "#<TFunc:#{@line}:#{@name}("+@arg_list+")\""+@code.split.join(" ").to_s+"\">"
     end
 end
 
@@ -96,6 +96,20 @@ class TID < TParseType
         @name = name.strip
         @file = file
         @line = line
+    end
+end
+
+class TLocal < TParseType
+    attr_accessor :name, :type, :value
+    def initialize(name, type, value, file, line)
+        @name  = name.gsub(":","")
+        @type  = type
+        @value = value
+        @file  = file
+        @line  = line
+    end
+    def inspect(depth=0)
+        " "*depth + "(TLocal #{@name} #{@type})"
     end
 end
 

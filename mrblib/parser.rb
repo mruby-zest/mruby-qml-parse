@@ -161,6 +161,10 @@ class Parser
                 ln   = @line
                 type = consume_tok
                 name = consume_tok
+                if(name[-1] != ':')
+                    raise Exception.new("Parser error: got '#{name}'@#{@file}:#{ln}, but expected a property name")
+                end
+                #puts "tok = #{name}"
                 program << TProp.new(name, type, @file, ln)
                 ln    = @line
                 value = consume_value_tok
