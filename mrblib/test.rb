@@ -20,7 +20,7 @@ class ZLayout;
     end
 end
 class DropDown; attr_accessor :text end
-class Button; attr_accessor :text, :renderer, :label end
+#class Button; attr_accessor :text, :renderer, :label end
 class Blank;
     attr_accessor :children
     def initialize()
