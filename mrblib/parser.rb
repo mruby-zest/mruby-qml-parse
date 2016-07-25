@@ -95,6 +95,10 @@ class Parser
                 depth += 1
             elsif(ss == "}")
                 depth -= 1
+            elsif(ss == "[")
+                depth += 1
+            elsif(ss == "]")
+                depth -= 1
             end
         end
         nd = @stream_pos-1
