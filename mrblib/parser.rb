@@ -153,7 +153,7 @@ class Parser
             if(tok == '}')
                 return program
             elsif(tok == "")
-                puts "Expected '}', but the end of the file was reached..."
+                puts "Parser error(#{@file}): Expected '}', but the end of the file was reached..."
                 return program
             elsif(tok == ";")
                 #Ignore
