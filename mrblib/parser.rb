@@ -1,3 +1,4 @@
+#QML Parser
 class Parser
     def initialize
         @stream = nil
@@ -6,6 +7,7 @@ class Parser
     end
 
 
+    #Parse QML File
     def load_qml_from_file(f)
         @file = f
         @line = 1
@@ -108,18 +110,23 @@ class Parser
         @stream[srt...nd]
     end
 
+    #return true if argument is a terminating character
     def term?(c)
         "\n;}".include? c
     end
 
+    #return true if argument is considered whitespace
     def space?(c)
         "\n \t\r".include? c
     end
 
+    #return true if argument is a special delimiter
     def special?(c)
         "{}()".include? c
     end
 
+    #Process argument list
+    # @return [String] argument list without '(' and ')'
     def consume_arg_list
         out=""
         ss = ""
@@ -133,6 +140,7 @@ class Parser
         out
     end
 
+    #Consume and discard input until end of line from input
     def consume_line
         while(getc != "\n" && !eof)
         end
@@ -198,10 +206,8 @@ class Parser
         program
     end
 
+    #Load qml from string
     def load_qml(s)
-        #ac1 = ObjectSpace.allocs
-        #dc1 = ObjectSpace.deallocs
-        #t1 = Time.new
         @stream     = s.read
         @stream_pos = 0
         @stream_len = @stream.length
@@ -229,10 +235,6 @@ class Parser
             end
         end
         @stream = nil
-        #t2 = Time.new
-        #ac2 = ObjectSpace.allocs
-        #dc2 = ObjectSpace.deallocs
-        #puts("#{1000*(t2-t1)}ms #{ac2-ac1} alloc #{dc2-dc1} deallocs")
         program
     end
 end

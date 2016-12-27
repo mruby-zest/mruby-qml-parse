@@ -1,5 +1,3 @@
-#require "set"
-#require "pp"
 #Window System
 #
 # /base/*
@@ -62,9 +60,6 @@
 # /end_context:
 #   Close a context
 
-#require_relative "parse-types"
-#require_relative "parser"
-
 #IR Commands
 SC = "/start_context"
 CC = "/create_class"
@@ -76,7 +71,3 @@ SP = "/set_parent"
 AM = "/add_method"
 CI = "/commit_instance"
 EC = "/end_context"
-
-#require_relative "prog-vm"
-#require_relative "prog-ir"
-
