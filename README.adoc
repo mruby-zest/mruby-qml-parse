@@ -1,0 +1,49 @@
+mruby-qml-parse
+---------------
+
+mruby-qml-parse is a parser for Qt's .qml files for ruby or mruby.
+
+This project is primarily targeted for use with
+https://github.com/mruby/mruby[mruby] and with
+https://en.wikipedia.org/wiki/QML[QML] files which may use an alternative
+scripting language other than javascript (which is what the official Qt
+implementation uses).
+
+
+Example Pseudo-QML (example.qml):
+
+----
+Rectangle {
+    id: window
+
+    property string fooVar: "foo"
+    property bool   barVar: true
+
+    Structure { id: structure }
+    Model     { id: model }
+
+    function fn(args) {
+        puts args
+        structure.method()
+    }
+}
+----
+
+To get the IR representation:
+
+----
+parser      = Parser.new
+parse_tree  = parser.load_qml_from_file("example.qml")
+ir_conv     = ProgIR.new(parse_tree[0])
+ir          = ir_conv.IR
+----
+
+This parser provides a lightweight means of converting the IR representation to
+a mruby instance via the ProgVM class, but the support provided by
+mruby-qml-spawn should be preferred.
+
+License
+-------
+
+This software is written by Mark McCurry and is provided under the MIT
+license. For more information please read the included LICENSE.
