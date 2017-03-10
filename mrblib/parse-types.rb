@@ -12,7 +12,7 @@ end
 
 class TExtend
     attr_reader :name
-    def initialize(name)
+    def initialize(name, file, line)
         @name = name
     end
 end

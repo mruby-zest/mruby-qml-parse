@@ -153,7 +153,7 @@ class Parser
             if(tok == '{')
                 break
             elsif(tok.length > 0 && tok[0].upcase == tok[0])
-                program << TExtend.new(tok, @file, ln)
+                program << TExtend.new(tok, @file, @line)
             else
                 puts "Unexpected '#{tok}' Expected '{'"
                 exit
