@@ -1,4 +1,4 @@
-#Dummy classes
+dummy_class = %{
 class Rectangle
     attr_accessor :children
     def initialize()
@@ -48,7 +48,12 @@ class MenuBar;
     end
 end
 class Radio; attr_accessor :options end
-class TextBox; attr_accessor :label end
+class TextBox; attr_accessor :label end}
+
+#Dummy classes
+def setup_classes
+    eval(dummy_class)
+end
 
 $test_counter = 0
 $test_err = 0
@@ -90,6 +95,7 @@ def test_summary
 end
 
 def mruby_qml_parse_test_parse(path)
+    setup_classes
     puts "#Creating Parser..."
     l = Parser.new
     prog = l.load_qml_from_file(path)
