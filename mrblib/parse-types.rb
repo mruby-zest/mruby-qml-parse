@@ -2,7 +2,7 @@ class TParseType
     attr_reader :line, :file
 end
 
-class TImport
+class TImport < TParseType
     def initialize(file, line)
     end
     def inspect

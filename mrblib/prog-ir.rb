@@ -8,6 +8,7 @@ class ProgIR
     #Initialize IR instance from parsed QML TInst 
     #representation
     def initialize(instance)
+        raise "Invalid node #{instance.inspect}, please provide a TExtend node" if instance.class == TImport
         @IR = []
         @cur_id = -1
         emit IrNode.new(SC, instance.file, 0, [])
