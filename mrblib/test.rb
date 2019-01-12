@@ -1,4 +1,4 @@
-dummy_class = %{
+$dummy_class = %{
 class Rectangle
     attr_accessor :children
     def initialize()
@@ -52,7 +52,7 @@ class TextBox; attr_accessor :label end}
 
 #Dummy classes
 def setup_classes
-    eval(dummy_class)
+    eval($dummy_class)
 end
 
 $test_counter = 0
